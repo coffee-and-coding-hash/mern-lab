@@ -1,0 +1,147 @@
+/******************************************************
+ PROGRAM 07
+ MongoDB Queries using Comparison and Logical Selectors
+ Company Database – employees collection
+******************************************************/
+
+/*----------------------------------------------------
+ STEP 1: Start MongoDB Shell
+----------------------------------------------------*/
+mongosh
+
+
+/*----------------------------------------------------
+ STEP 2: Create / Use Database
+----------------------------------------------------*/
+use companyDB
+
+
+/*----------------------------------------------------
+ STEP 3: Insert Sample Data into employees Collection
+----------------------------------------------------*/
+db.employees.insertMany([
+  {
+    employee_id: 101,
+    name: "Sonia Rao",
+    department: "Engineering",
+    salary: 95000,
+    hire_date: new Date("2023-01-15"),
+    performance_score: 4.5,
+    status: "Active"
+  },
+  {
+    employee_id: 102,
+    name: "Rajesh Kumar",
+    department: "HR",
+    salary: 68000,
+    hire_date: new Date("2024-03-22"),
+    performance_score: 4.1,
+    status: "Active"
+  },
+  {
+    employee_id: 103,
+    name: "Arjun Singh",
+    department: "Engineering",
+    salary: 120000,
+    hire_date: new Date("2022-06-01"),
+    performance_score: 4.8,
+    status: "Active"
+  },
+  {
+    employee_id: 104,
+    name: "Priya Mehta",
+    department: "Sales",
+    salary: 85000,
+    hire_date: new Date("2023-11-10"),
+    performance_score: 4.2,
+    status: "Active"
+  },
+  {
+    employee_id: 105,
+    name: "Vikram Reddy",
+    department: "Sales",
+    salary: 85000,
+    hire_date: new Date("2024-08-01"),
+    status: "On Leave"
+  }
+]);
+
+
+/*====================================================
+ 1. COMPARISON SELECTORS
+====================================================*/
+
+/*----------------------------------------------------
+ Query 1: $gt and $lte
+ Goal: Employees with salary > 90000 and <= 120000
+----------------------------------------------------*/
+db.employees.find({
+  salary: { $gt: 90000, $lte: 120000 }
+});
+
+
+/*----------------------------------------------------
+ Query 2: $in
+ Goal: Employees working in HR or Sales department
+----------------------------------------------------*/
+db.employees.find({
+  department: { $in: ["HR", "Sales"] }
+});
+
+
+/*----------------------------------------------------
+ Query 3: $ne
+ Goal: Employees whose status is NOT "On Leave"
+----------------------------------------------------*/
+db.employees.find({
+  status: { $ne: "On Leave" }
+});
+
+
+/*====================================================
+ 2. LOGICAL SELECTORS
+====================================================*/
+
+/*----------------------------------------------------
+ Query 4: Implicit $and
+ Goal: Engineering employees with performance >= 4.5
+----------------------------------------------------*/
+db.employees.find({
+  department: "Engineering",
+  performance_score: { $gte: 4.5 }
+});
+
+
+/*----------------------------------------------------
+ Query 5: $or
+ Goal: Employees in HR department OR salary > 100000
+----------------------------------------------------*/
+db.employees.find({
+  $or: [
+    { department: "HR" },
+    { salary: { $gt: 100000 } }
+  ]
+});
+
+
+/*====================================================
+ 3. COMBINED (COMPLEX) QUERY
+====================================================*/
+
+/*----------------------------------------------------
+ Goal:
+ Find all ACTIVE employees
+ - Department: Engineering or Sales
+ - Hired before 2024
+----------------------------------------------------*/
+db.employees.find({
+  status: "Active",
+  department: { $in: ["Engineering", "Sales"] },
+  hire_date: { $lt: new Date("2024-01-01") }
+});
+
+
+/******************************************************
+ END OF PROGRAM 07
+******************************************************/
+
